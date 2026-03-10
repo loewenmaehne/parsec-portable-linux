@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # ==============================================================================
-# Parsec Portable Launcher for Restricted Linux Environments
+# Parsec Portable Linux (No-Root / No-Sudo)
 # Repository: https://github.com/loewenmaehne/parsec-portable-linux
 # ==============================================================================
 
-# Define our directories and files
-PARSEC_DIR="$HOME/parsec-local"
+# Define XDG-compliant directories
+PARSEC_DIR="$HOME/.local/share/parsec-portable"
 PARSEC_CONFIG="$HOME/.parsec"
 PARSEC_BIN="$PARSEC_DIR/usr/bin/parsecd"
 
@@ -37,15 +37,17 @@ else
     exit 1
 fi
 
-echo "📦 Extracting package..."
-dpkg -x parsec-linux.deb .
+echo "📦 Extracting package universally (No dpkg required)..."
+# Extract the .deb using standard archive tools
+ar x parsec-linux.deb
+tar -xf data.tar.*
+
+# Clean up the archive files
+rm -f control.tar.* debian-binary parsec-linux.deb data.tar.*
 
 # The Magic Fix: Copy the skeleton config files so Parsec doesn't panic and exit
 echo "🔧 Applying the skeleton config fix..."
 cp -r ./usr/share/parsec/skel/* "$PARSEC_CONFIG/" 2>/dev/null
-
-# Clean up the .deb file
-rm parsec-linux.deb
 
 echo "✅ Setup complete!"
 echo "🎮 Launching Parsec..."
