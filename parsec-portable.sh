@@ -39,7 +39,7 @@ if [ ! -f "$DESKTOP_ENTRY" ]; then
 [Desktop Entry]
 Name=Parsec Portable
 Exec=$PARSEC_BIN
-Icon=$PARSEC_DIR/usr/share/icons/hicolor/256x256/apps/parsecd.png
+Icon=$PARSEC_DIR/usr/share/icons/hicolor/512x512/apps/parsecd.png
 Terminal=false
 Type=Application
 Categories=Network;RemoteAccess;
