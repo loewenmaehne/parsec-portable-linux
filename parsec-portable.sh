@@ -5,52 +5,46 @@
 # Repository: https://github.com/loewenmaehne/parsec-portable-linux
 # ==============================================================================
 
-# Define XDG-compliant directories
 PARSEC_DIR="$HOME/.local/share/parsec-portable"
 PARSEC_CONFIG="$HOME/.parsec"
 PARSEC_BIN="$PARSEC_DIR/usr/bin/parsecd"
+DESKTOP_ENTRY="$HOME/.local/share/applications/parsec-portable.desktop"
 
 echo "🚀 Checking for Parsec..."
 
-# Check if the Parsec binary already exists and is executable
 if [ -x "$PARSEC_BIN" ]; then
     echo "✅ Parsec is already installed!"
-    echo "🎮 Launching Parsec..."
-    "$PARSEC_BIN" &
-    exit 0
-fi
-
-# If it doesn't exist, proceed with the portable setup
-echo "⚠️ Parsec not found. Starting portable setup..."
-
-mkdir -p "$PARSEC_DIR"
-mkdir -p "$PARSEC_CONFIG"
-cd "$PARSEC_DIR" || exit
-
-echo "⬇️ Downloading Parsec..."
-if command -v wget >/dev/null 2>&1; then
-    wget -qO parsec-linux.deb https://builds.parsecgaming.com/package/parsec-linux.deb
-elif command -v curl >/dev/null 2>&1; then
-    curl -sL -o parsec-linux.deb https://builds.parsecgaming.com/package/parsec-linux.deb
 else
-    echo "❌ Error: Neither wget nor curl is installed."
-    exit 1
+    echo "⚠️ Starting portable setup..."
+    mkdir -p "$PARSEC_DIR" "$PARSEC_CONFIG"
+    cd "$PARSEC_DIR" || exit
+
+    echo "⬇️ Downloading..."
+    URL="https://builds.parsecgaming.com/package/parsec-linux.deb"
+    if command -v wget >/dev/null; then wget -qO p.deb "$URL"; else curl -sL -o p.deb "$URL"; fi
+
+    echo "📦 Extracting..."
+    ar x p.deb && tar -xf data.tar.*
+    rm -f control.tar.* debian-binary p.deb data.tar.*
+
+    echo "🔧 Patching config..."
+    cp -r ./usr/share/parsec/skel/* "$PARSEC_CONFIG/" 2>/dev/null
 fi
 
-echo "📦 Extracting package universally (No dpkg required)..."
-# Extract the .deb using standard archive tools
-ar x parsec-linux.deb
-tar -xf data.tar.*
+# Create Desktop Entry (Standard Linux App Integration)
+if [ ! -f "$DESKTOP_ENTRY" ]; then
+    echo "🖥️ Integrating with App Menu..."
+    mkdir -p "$HOME/.local/share/applications"
+    cat <<EOF > "$DESKTOP_ENTRY"
+[Desktop Entry]
+Name=Parsec Portable
+Exec=$PARSEC_BIN
+Icon=$PARSEC_DIR/usr/share/icons/hicolor/512x512/apps/parsecd.png
+Terminal=false
+Type=Application
+Categories=Network;RemoteAccess;
+EOF
+fi
 
-# Clean up the archive files
-rm -f control.tar.* debian-binary parsec-linux.deb data.tar.*
-
-# The Magic Fix: Copy the skeleton config files so Parsec doesn't panic and exit
-echo "🔧 Applying the skeleton config fix..."
-cp -r ./usr/share/parsec/skel/* "$PARSEC_CONFIG/" 2>/dev/null
-
-echo "✅ Setup complete!"
 echo "🎮 Launching Parsec..."
-
-# Launch in the background
-"$PARSEC_BIN" &
+"$PARSEC_BIN" > /dev/null 2>&1 &
