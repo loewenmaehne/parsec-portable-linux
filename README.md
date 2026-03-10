@@ -1,25 +1,20 @@
 # Parsec Portable Linux (No-Root / No-Sudo) 🎮
 
-A lightweight, automated bash script to install and run the [Parsec](https://parsec.app/) game streaming client on restricted Linux machines (like school or work computers) where you do not have `sudo`, `apt`, or root privileges.
+A lightweight, automated bash script to install and run the [Parsec](https://parsec.app/) game streaming client on restricted Linux machines where you do not have `sudo`, `apt`, or root privileges.
 
 ## 🧐 Why this exists
-Normally, Parsec requires root privileges to install via a `.deb` package. If you try to manually unpack the `.deb` and run the binary without installing it globally, Parsec will silently crash and exit. 
-
-This happens because the app looks for default configuration files in `/usr/share/parsec/skel` (which requires root to create). 
+Normally, Parsec requires root privileges to install via a `.deb` package. If you try to manually unpack the binary and run it, it will silently exit because it expects configuration files in `/usr/share/parsec/skel`—a directory you can't create without root.
 
 ## 🪄 How it works
-This script bypasses system restrictions by:
-1. Downloading the official `.deb` package directly from Parsec's servers.
-2. Unpacking the archive locally into your `~/parsec-local` directory.
-3. **The Magic Fix:** Copying the required `skel` setup files into your local `~/.parsec` hidden folder so the app can successfully bootstrap itself.
-4. Launching the app. 
-
-It also checks if Parsec is already downloaded so you don't waste bandwidth re-downloading it every time you want to play.
+This script follows Linux best practices to get you running without admin rights:
+1. **Universal Extraction:** Uses `ar` and `tar` to extract the official `.deb` package, making the script **distro-agnostic** (works on Ubuntu, Fedora, Arch, etc.).
+2. **XDG Compliance:** Installs the app into `~/.local/share/parsec-portable` to keep your home directory clean.
+3. **The Magic Fix:** Manually bootstraps the required `skel` config files into `~/.parsec` so the app launches successfully.
+4. **Desktop Integration:** Automatically creates a Desktop Entry so Parsec appears in your **Application Menu** with the official icon.
 
 ## 🚀 How to use it
 
 ### Option 1: Quick Run (One-Liner)
-You can download, make executable, and run the script in a single command from your terminal:
-
+Download and launch Parsec instantly:
 ```bash
 curl -sO [https://raw.githubusercontent.com/loewenmaehne/parsec-portable-linux/main/parsec-portable.sh](https://raw.githubusercontent.com/loewenmaehne/parsec-portable-linux/main/parsec-portable.sh) && chmod +x parsec-portable.sh && ./parsec-portable.sh
