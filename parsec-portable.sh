@@ -44,7 +44,7 @@ if [ ! -f "$DESKTOP_ENTRY" ]; then
     mkdir -p "$HOME/.local/share/applications"
     cat <<EOF > "$DESKTOP_ENTRY"
 [Desktop Entry]
-Name=Parsec Portable
+Name=Parsec
 Exec=$PARSEC_BIN
 Icon=parsecd
 Terminal=false
