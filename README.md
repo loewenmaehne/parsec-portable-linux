@@ -17,4 +17,5 @@ This script follows Linux best practices to get you running without admin rights
 ### Option 1: Quick Run (One-Liner)
 Download and launch Parsec instantly:
 ```bash
-curl -sO [https://raw.githubusercontent.com/loewenmaehne/parsec-portable-linux/main/parsec-portable.sh](https://raw.githubusercontent.com/loewenmaehne/parsec-portable-linux/main/parsec-portable.sh) && chmod +x parsec-portable.sh && ./parsec-portable.sh
+curl -sO https://raw.githubusercontent.com/loewenmaehne/parsec-portable-linux/main/parsec-portable.sh && chmod +x parsec-portable.sh && ./parsec-portable.sh
+```
