@@ -29,6 +29,13 @@ else
 
     echo "🔧 Patching config..."
     cp -r ./usr/share/parsec/skel/* "$PARSEC_CONFIG/" 2>/dev/null
+
+    echo "🖼️ Installing icon..."
+    mkdir -p "$HOME/.local/share/icons/hicolor/256x256/apps"
+    cp "$PARSEC_DIR/usr/share/icons/hicolor/256x256/apps/parsecd.png" \
+        "$HOME/.local/share/icons/hicolor/256x256/apps/parsecd.png"
+    command -v gtk-update-icon-cache >/dev/null && \
+        gtk-update-icon-cache -f -t "$HOME/.local/share/icons/hicolor" 2>/dev/null || true
 fi
 
 # Create Desktop Entry (Standard Linux App Integration)
@@ -39,10 +46,11 @@ if [ ! -f "$DESKTOP_ENTRY" ]; then
 [Desktop Entry]
 Name=Parsec Portable
 Exec=$PARSEC_BIN
-Icon=$PARSEC_DIR/usr/share/icons/hicolor/512x512/apps/parsecd.png
+Icon=parsecd
 Terminal=false
 Type=Application
 Categories=Network;RemoteAccess;
+StartupWMClass=parsecd
 EOF
 fi
 
